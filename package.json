@@ -9,7 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "firebase": "^10.8.0",
     "vue": "^3.4.19",
+    "vue-gtag": "^2.0.1",
     "vuefire": "^3.1.23"
   },
   "devDependencies": {
