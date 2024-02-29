@@ -23,4 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 
-src/stores/.firebaseConfig.js
+client-secret-insight-cogsci.json
+data
+cors.json
+scripts/upload_videos_to_yt.py

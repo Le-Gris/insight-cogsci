@@ -23,7 +23,7 @@ jobs:
 
       - name: Load the general config dotenv file
         id: dotenv_config
-        uses: falti/dotenv-action@v0.2.8
+        uses: falti/dotenv-action@v1.1
         with:
           path: './env/.env.local'
 

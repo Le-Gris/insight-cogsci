@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
 defineProps({
   msg: String,
@@ -37,4 +37,4 @@ const count = ref(0)
 .read-the-docs {
   color: #888;
 }
-</style>
+</style> 
