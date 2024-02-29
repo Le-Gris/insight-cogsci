@@ -35,7 +35,9 @@ const fetchVideos = async () => {
     querySnapshot.forEach(doc => {
         videos.value.push(doc.data())
     })
-    console.log('videos', videos.value)
+
+    // reset current page to 1
+    currentPage.value = 1
 }
 
 const fetchStorageUrls = async () => {
