@@ -7,7 +7,7 @@ import { ref as storageRef } from 'firebase/storage';
 const db = useFirestore()
 const storage = useFirebaseStorage()
 
-const levels = ['level10', 'level20', 'level5', 'level22']
+const levels = ['level26', 'level23', 'level20', 'level22']
 const filters = reactive({
     insight: 0,
     level: "",
@@ -19,7 +19,7 @@ let sortedVideos = ref([])
 let paginatedVideos = ref([])
 
 const sortBy = ref('insight')
-const perPage = ref(4)
+const perPage = ref(2)
 const perPageOptions = [1, 2, 4, 8]
 const currentPage = ref(1)
 
@@ -146,6 +146,9 @@ const playAllVideos = () => {
             <!-- Play button -->
             <button @click="playAllVideos">Play All</button>
 
+            <!-- Horizontal space -->
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+
             <!-- Speed control -->
             <label>Speed:</label>
             <select v-model="playbackSpeed">
@@ -154,21 +157,42 @@ const playAllVideos = () => {
                 <option value="0.5">0.5x</option>
             </select>
 
+            <!-- Horizontal space -->
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+
             <!-- Seconds from the end dropdown -->
             <label>Seconds from end:</label>
             <select v-model="secondsFromEnd">
                 <option v-for="seconds in secondsOptions" :value="seconds">{{ seconds }}</option>
             </select>
+
+            <!-- Horizontal space -->
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
         </div>
 
 
-        <div class="grid">
+        <div v-if="perPage > 1" class="grid">
             <div class="grid-item" v-for="video in paginatedVideos" :key="video.doc_id" :id="video.doc_id">
-                <video :src="video.url" controls width="100%">
-                    Your browser does not support the video tag.
-                </video>
-                <div>
-                    <p class="insight">Insight: {{ video.insight }}</p>
+                <div class="video-container">
+                    <video :src="video.url" controls width="100%">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div>
+                        <p class="insight">Insight: {{ video.insight }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div v-else>
+            <div v-for="video in paginatedVideos" :key="video.doc_id" :id="video.doc_id">
+                <div class="video-container">
+                    <video :src="video.url" controls width="100%">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div>
+                        <p class="insight">Insight: {{ video.insight }}</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -191,22 +215,25 @@ const playAllVideos = () => {
     justify-content: space-between;
     align-items: center;
     padding: 10px;
-    background-color: #f0f0f0;
+    background-color: #c4c4c4;
     color: #000;
     margin-bottom: 20px;
+    border-radius: 10px;
 }
 
 .additional-controls {
     align-items: center;
     justify-content: space-between;
     padding: 5px;
-    background-color: #f0f0f0;
+    background-color: #c4c4c4;
     color: #000;
     margin-bottom: 20px;
+    border-radius: 10px;
 }
 
 .insight {
-    color: crimson;
+    color: rgb(37, 34, 34);
+    font-size: large;
 }
 
 .user-controls label {
@@ -222,6 +249,9 @@ const playAllVideos = () => {
 
 .grid-item {
     margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
 }
 
 .pagination {
