@@ -103,7 +103,10 @@ const playAllVideos = () => {
     var videoElements = document.getElementsByTagName("video");
     for (var i = 0; i < videoElements.length; i++) {
         videoElements[i].playbackRate = playbackSpeed.value;
-        videoElements[i].currentTime = videoElements[i].duration - secondsFromEnd.value;
+        if (secondsFromEnd.value === "max")
+            videoElements[i].currentTime = 0.0;
+        else
+            videoElements[i].currentTime = videoElements[i].duration - secondsFromEnd.value;
         videoElements[i].play();
     }
 };
