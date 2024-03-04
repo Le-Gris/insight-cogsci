@@ -149,7 +149,7 @@ const playAllVideos = () => {
         <!-- New user controls -->
         <div class="additional-controls">
             <!-- Play button -->
-            <button @click="playAllVideos">Play All</button>
+            <button @click="playAllVideos">Play</button>
 
             <!-- Horizontal space -->
             <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
