@@ -63,7 +63,7 @@ const sortVideos = () => {
             return a.insight - b.insight
         } else {
             // return random values
-            return Math.random() - 0.5
+            return Math.random()
         }
     })
 }
@@ -94,7 +94,7 @@ const nextPage = () => {
 
 const playbackSpeed = ref("1"); // Default playback speed
 const secondsFromEnd = ref(5); // Default seconds from the end
-const secondsOptions = [5, 10, 15, 20, "max"]; // Options for seconds from the end
+const secondsOptions = [5, 10, 15, 20, 30, "max"]; // Options for seconds from the end
 
 // Method to play all videos
 const playAllVideos = () => {
@@ -160,6 +160,7 @@ const playAllVideos = () => {
                 <option value="1">1x</option>
                 <option value="0.75">0.75x</option>
                 <option value="0.5">0.5x</option>
+                <option value="0.25">0.25x</option>
             </select>
 
             <!-- Horizontal space -->
@@ -213,7 +214,7 @@ const playAllVideos = () => {
         </div>
     </div>
 </template>
-  
+
 <style scoped>
 .user-controls {
     display: flex;
@@ -265,5 +266,3 @@ const playAllVideos = () => {
     color: #000;
 }
 </style>
-
-  
