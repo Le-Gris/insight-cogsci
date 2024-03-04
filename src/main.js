@@ -13,12 +13,12 @@ const firebaseApp = initializeApp(config.firebaseConfig);
 // Create the app
 const app = createApp(App);
 
-// Use the VueGtag plugin
-app.use(VueGtag, {
-  disableScriptLoad: import.meta.env.MODE === 'development', // disable script load in development
-  pageTrackerExcludedRoutes: ['config'], // ignore the config route
-  config: { id: import.meta.env.VITE_GOOGLE_ANALYTICS },
-});
+// // Use the VueGtag plugin
+// app.use(VueGtag, {
+//   disableScriptLoad: import.meta.env.MODE === 'development', // disable script load in development
+//   pageTrackerExcludedRoutes: ['config'], // ignore the config route
+//   config: { id: import.meta.env.VITE_GOOGLE_ANALYTICS },
+// });
 
 // Use the VueFire plugin
 app.use(VueFire, {
