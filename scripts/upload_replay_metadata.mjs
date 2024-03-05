@@ -24,7 +24,7 @@ let count = 0;
 const init = () => {
   console.log(
     chalk.green(
-      figlet.textSync('SMILE.', {
+      figlet.textSync('GET META-INSIGHTS.', {
         font: 'big',
         horizontalLayout: 'default',
         verticalLayout: 'default',
@@ -40,7 +40,7 @@ const askQuestions = () => {
       type: 'input',
       name: 'FILENAME',
       message: 'What is the name of the file without extension?',
-      default: 'data',
+      default: 'train_set_metadata',
     },
   ];
   return inquirer.prompt(questions);
@@ -78,7 +78,6 @@ const success = (count, c) => {
 };
 
 const run = async () => {
-  // show script introduction
   init();
   const env = dotenv.config({ path: 'env/.env.git.local' });
   const c = 'replayDataInfo';
