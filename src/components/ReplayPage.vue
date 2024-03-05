@@ -1,112 +1,164 @@
 <script setup>
-import { ref, reactive, watchEffect, computed } from 'vue'
-import { useFirestore, useFirebaseStorage, useStorageFileUrl } from 'vuefire'
-import { getDocs, collection, query, where, } from 'firebase/firestore'
+import { ref, reactive, watchEffect, computed } from 'vue';
+import {
+    useFirestore,
+    useFirebaseStorage,
+    useStorageFileUrl,
+} from 'vuefire';
+import {
+    getDocs,
+    collection,
+    query,
+    where,
+} from 'firebase/firestore';
 import { ref as storageRef } from 'firebase/storage';
 
-const db = useFirestore()
-const storage = useFirebaseStorage()
 
-const levels = ['level26', 'level23', 'level20', 'level22']
+const db = useFirestore();
+const storage = useFirebaseStorage();
+
+// get list of levels from public data
+const levels = [
+    "level12",
+    "level10",
+    "level20",
+    "level22",
+    "level4",
+    "level26",
+    "level14",
+    "level8",
+    "level5",
+    "level18",
+    "level23",
+    "level27",
+    "level3",
+    "level2",
+    "level13"
+]
+// sort levels
+levels.sort(
+    (a, b) => parseInt(a.replace('level', '')) - parseInt(b.replace('level', ''))
+);
+
 const filters = reactive({
     insight: 0,
-    level: "",
-    won: true
-})
+    level: '',
+    won: true,
+});
 
-let videos = ref([])
-let sortedVideos = ref([])
-let paginatedVideos = ref([])
+let videos = ref([]);
+let sortedVideos = ref([]);
+let paginatedVideos = ref([]);
 
-const sortBy = ref('insight')
-const perPage = ref(2)
-const perPageOptions = [1, 2, 4, 8]
-const currentPage = ref(1)
+const sortBy = ref('insight');
+const perPage = ref(1);
+const perPageOptions = [1, 2, 4, 8];
+const currentPage = ref(1);
 
 const fetchVideos = async () => {
-    console.log('fetchVideos', filters)
     // check if level is null
-    const q = filters.level === "" ? query(collection(db, 'replayDataInfo'), where('insight', '>=', parseInt(filters.insight), where('won', '==', filters.won))) : query(collection(db, 'replayDataInfo'), where('insight', '>=', parseInt(filters.insight)), where('level', '==', filters.level), where('won', '==', filters.won))
+    const q =
+        filters.level === ''
+            ? query(
+                collection(db, 'replayDataInfo'),
+                where(
+                    'insight',
+                    '>=',
+                    parseInt(filters.insight),
+                    where('won', '==', filters.won)
+                )
+            )
+            : query(
+                collection(db, 'replayDataInfo'),
+                where('insight', '>=', parseInt(filters.insight)),
+                where('level', '==', filters.level),
+                where('won', '==', filters.won)
+            );
 
     const querySnapshot = await getDocs(q);
-    console.log('querySnapshot', querySnapshot)
 
-    videos.value = []
-    querySnapshot.forEach(doc => {
-        videos.value.push(doc.data())
-    })
+    videos.value = [];
+    querySnapshot.forEach((doc) => {
+        videos.value.push(doc.data());
+    });
 
     // reset current page to 1
-    currentPage.value = 1
-}
+    currentPage.value = 1;
+};
 
 const fetchStorageUrls = async () => {
-    const promises = videos.value.map(async video => {
-        const sRef = storageRef(storage, video.filename)
-        const { url, refresh } = useStorageFileUrl(sRef)
-        return { ...video, url }
-    })
-    sortedVideos.value = await Promise.all(promises)
-}
+    const promises = videos.value.map(async (video) => {
+        const sRef = storageRef(storage, video.filename);
+        const { url, refresh } = useStorageFileUrl(sRef);
+        return { ...video, url };
+    });
+    sortedVideos.value = await Promise.all(promises);
+};
 
 watchEffect(() => {
-    fetchVideos()
-})
+    fetchVideos();
+});
 
 watchEffect(() => {
-    fetchStorageUrls()
-})
+    fetchStorageUrls();
+});
 
 const sortVideos = () => {
     sortedVideos.value = videos.value.slice().sort((a, b) => {
         if (sortBy.value === 'insight') {
-            return a.insight - b.insight
+            return a.insight - b.insight;
         } else {
             // return random values
-            return Math.random()
+            return Math.random();
         }
-    })
-}
+    });
+};
 
 watchEffect(() => {
-    sortVideos()
-})
+    sortVideos();
+});
 
 watchEffect(() => {
-    const startIndex = (currentPage.value - 1) * perPage.value
-    const endIndex = startIndex + perPage.value
-    paginatedVideos.value = sortedVideos.value.slice(startIndex, endIndex)
-})
+    const startIndex = (currentPage.value - 1) * perPage.value;
+    const endIndex = startIndex + perPage.value;
+    paginatedVideos.value = sortedVideos.value.slice(
+        startIndex,
+        endIndex
+    );
+});
 
-const totalPages = computed(() => Math.ceil(sortedVideos.value.length / perPage.value))
+const totalPages = computed(() =>
+    Math.ceil(sortedVideos.value.length / perPage.value)
+);
 
 const prevPage = () => {
     if (currentPage.value > 1) {
-        currentPage.value--
+        currentPage.value--;
     }
-}
+};
 
 const nextPage = () => {
     if (currentPage.value < totalPages.value) {
-        currentPage.value++
+        currentPage.value++;
     }
-}
+};
 
-const playbackSpeed = ref("1"); // Default playback speed
+const playbackSpeed = ref('1'); // Default playback speed
 const secondsFromEnd = ref(5); // Default seconds from the end
-const secondsOptions = [5, 10, 15, 20, 30, "max"]; // Options for seconds from the end
+const secondsOptions = [5, 10, 15, 20, 30, 'max']; // Options for seconds from the end
 
 // Method to play all videos
 const playAllVideos = () => {
     // Loop through paginatedVideos and play each video
     // get all video elements and play them
-    var videoElements = document.getElementsByTagName("video");
+    var videoElements = document.getElementsByTagName('video');
     for (var i = 0; i < videoElements.length; i++) {
         videoElements[i].playbackRate = playbackSpeed.value;
-        if (secondsFromEnd.value === "max")
+        if (secondsFromEnd.value === 'max')
             videoElements[i].currentTime = 0.0;
         else
-            videoElements[i].currentTime = videoElements[i].duration - secondsFromEnd.value;
+            videoElements[i].currentTime =
+                videoElements[i].duration - secondsFromEnd.value;
         videoElements[i].play();
     }
 };
@@ -128,11 +180,13 @@ const playAllVideos = () => {
             <label>Level:</label>
             <select v-model="filters.level">
                 <option value="">All</option>
-                <option v-for="level in levels" :key="level" :value="level">{{ level }}</option>
+                <option v-for="level in levels" :key="level" :value="level">
+                    {{ level }}
+                </option>
             </select>
 
             <label>Win:</label>
-            <input type="checkbox" v-model="filters.won">
+            <input type="checkbox" v-model="filters.won" />
 
             <!-- <label>Sort By:</label>
             <select v-model="sortBy">
@@ -142,7 +196,9 @@ const playAllVideos = () => {
 
             <label>Videos Per Page:</label>
             <select v-model="perPage">
-                <option v-for="option in perPageOptions" :value="option">{{ option }}</option>
+                <option v-for="option in perPageOptions" :value="option">
+                    {{ option }}
+                </option>
             </select>
         </div>
 
@@ -169,13 +225,14 @@ const playAllVideos = () => {
             <!-- Seconds from the end dropdown -->
             <label>Seconds from end:</label>
             <select v-model="secondsFromEnd">
-                <option v-for="seconds in secondsOptions" :value="seconds">{{ seconds }}</option>
+                <option v-for="seconds in secondsOptions" :value="seconds">
+                    {{ seconds }}
+                </option>
             </select>
 
             <!-- Horizontal space -->
             <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
         </div>
-
 
         <div v-if="perPage > 1" class="grid">
             <div class="grid-item" v-for="video in paginatedVideos" :key="video.doc_id" :id="video.doc_id">
@@ -204,13 +261,17 @@ const playAllVideos = () => {
         </div>
 
         <div class="pagination">
-            <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
-            <br>
+            <button @click="prevPage" :disabled="currentPage === 1">
+                Previous
+            </button>
+            <br />
             <span>
                 <b>{{ currentPage }}</b> / <b>{{ totalPages }}</b>
             </span>
-            <br>
-            <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
+            <br />
+            <button @click="nextPage" :disabled="currentPage === totalPages">
+                Next
+            </button>
         </div>
     </div>
 </template>
