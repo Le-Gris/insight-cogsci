@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, watchEffect, computed } from 'vue';
+import { ref, reactive, watchEffect, computed, onMounted } from 'vue';
 import {
     useFirestore,
     useFirebaseStorage,
@@ -166,6 +166,9 @@ const playAllVideos = () => {
         videoElements[i].play();
     }
 };
+onMounted(() => {
+    console.log("replay mounted");
+});
 </script>
 
 <template>
@@ -237,7 +240,7 @@ const playAllVideos = () => {
 
             <div class="select">
                 <select v-model="secondsFromEnd">
-                    <option value="max">Seconds from end:</option>
+                    <option value="max">Seconds from end</option>
                     <option v-for="seconds in secondsOptions" :value="seconds">
                         {{ seconds }}
                     </option>
