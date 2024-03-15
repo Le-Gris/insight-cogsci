@@ -5,7 +5,7 @@ import config from './config';
 import { VueFire, VueFireAuth } from 'vuefire';
 import VueGtag from 'vue-gtag'; // google analytics
 // import router from './router';
-import './style.css';
+import '../css/mystyles.css';
 
 // Initialize Firebase
 const firebaseApp = initializeApp(config.firebaseConfig);

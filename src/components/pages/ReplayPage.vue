@@ -143,8 +143,12 @@ const nextPage = () => {
     }
 };
 
+const goToPage = (page) => {
+    currentPage.value = page;
+};
+
 const playbackSpeed = ref('1'); // Default playback speed
-const secondsFromEnd = ref(5); // Default seconds from the end
+const secondsFromEnd = ref('max'); // Default seconds from the end
 const secondsOptions = [5, 10, 15, 20, 30, 'max']; // Options for seconds from the end
 
 // Method to play all videos
@@ -165,28 +169,29 @@ const playAllVideos = () => {
 </script>
 
 <template>
-    <div>
+    <div id="viewer">
         <div class="user-controls">
-            <label>Minimum insight reported:</label>
-            <select v-model="filters.insight">
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-            </select>
+            <div class="select">
+                <select v-model="filters.insight">
+                    <option value="0">Min insight reported</option>
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
 
-            <label>Level:</label>
-            <select v-model="filters.level">
-                <option value="">All</option>
-                <option v-for="level in levels" :key="level" :value="level">
-                    {{ level }}
-                </option>
-            </select>
-
-            <label>Win:</label>
-            <input type="checkbox" v-model="filters.won" />
+            <div class="select">
+                <select v-model="filters.level">
+                    <option value="">Level</option>
+                    <option value="">All</option>
+                    <option v-for="level in levels" :key="level" :value="level">
+                        {{ level }}
+                    </option>
+                </select>
+            </div>
 
             <!-- <label>Sort By:</label>
             <select v-model="sortBy">
@@ -194,44 +199,51 @@ const playAllVideos = () => {
                 <option value="score">Random</option>
             </select> -->
 
-            <label>Videos Per Page:</label>
-            <select v-model="perPage">
-                <option v-for="option in perPageOptions" :value="option">
-                    {{ option }}
-                </option>
-            </select>
+            <div class="select">
+                <select v-model="perPage">
+                    <option value="1">Per page</option>
+                    <option v-for="option in perPageOptions" :value="option">
+                        {{ option }}
+                    </option>
+                </select>
+            </div>
+
+            <!-- <div>
+                <span class="tag is-white is-large">Win:</span>
+                <span>&nbsp;&nbsp;</span>
+                <div class="checkbox is-medium"> <input type="checkbox" v-model="filters.won" /></div>
+            </div> -->
+
         </div>
 
         <!-- New user controls -->
-        <div class="additional-controls">
+        <div class="user-controls">
             <!-- Play button -->
-            <button @click="playAllVideos">Play</button>
-
-            <!-- Horizontal space -->
-            <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <button class="button" @click="playAllVideos">Play</button>
 
             <!-- Speed control -->
-            <label>Speed:</label>
-            <select v-model="playbackSpeed">
-                <option value="1">1x</option>
-                <option value="0.75">0.75x</option>
-                <option value="0.5">0.5x</option>
-                <option value="0.25">0.25x</option>
-            </select>
+            <div class="select">
+                <select v-model="playbackSpeed">
+                    <option value="1">Speed</option>
+                    <option value="1">1x</option>
+                    <option value="0.75">0.75x</option>
+                    <option value="0.5">0.5x</option>
+                    <option value="0.25">0.25x</option>
+                </select>
+            </div>
 
-            <!-- Horizontal space -->
-            <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
 
             <!-- Seconds from the end dropdown -->
-            <label>Seconds from end:</label>
-            <select v-model="secondsFromEnd">
-                <option v-for="seconds in secondsOptions" :value="seconds">
-                    {{ seconds }}
-                </option>
-            </select>
 
-            <!-- Horizontal space -->
-            <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <div class="select">
+                <select v-model="secondsFromEnd">
+                    <option value="max">Seconds from end:</option>
+                    <option v-for="seconds in secondsOptions" :value="seconds">
+                        {{ seconds }}
+                    </option>
+                </select>
+            </div>
+
         </div>
 
         <div v-if="perPage > 1" class="grid">
@@ -260,51 +272,52 @@ const playAllVideos = () => {
             </div>
         </div>
 
-        <div class="pagination">
-            <button @click="prevPage" :disabled="currentPage === 1">
-                Previous
-            </button>
-            <br />
-            <span>
-                <b>{{ currentPage }}</b> / <b>{{ totalPages }}</b>
-            </span>
-            <br />
-            <button @click="nextPage" :disabled="currentPage === totalPages">
-                Next
-            </button>
-        </div>
+        <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+            <button class="pagination-previous" @click="prevPage" :disabled="currentPage === 1">Previous</button>
+            <button class="pagination-next" @click="nextPage" :disabled="currentPage === totalPages">Next page</button>
+            <ul class="pagination-list">
+                <li v-if="currentPage > 2"><button class="pagination-link" aria-label="Goto page 1"
+                        @click="goToPage(1)">1</button></li>
+                <li v-if="currentPage > 3"><span class="pagination-ellipsis">&hellip;</span></li>
+                <li v-if="currentPage > 1"><button class="pagination-link" @click="goToPage(currentPage - 1)">{{
+                    currentPage - 1 }}</button></li>
+                <li><button class="pagination-link is-current" aria-current="page">{{ currentPage }}</button></li>
+                <li v-if="currentPage < totalPages"><button class="pagination-link"
+                        @click="goToPage(currentPage + 1)">{{ currentPage + 1 }}</button></li>
+                <li v-if="currentPage < totalPages - 1"><span class="pagination-ellipsis">&hellip;</span></li>
+                <li v-if="currentPage < totalPages"><button class="pagination-link" @click="goToPage(totalPages)">{{
+                    totalPages }}</button></li>
+            </ul>
+        </nav>
     </div>
 </template>
 
 <style scoped>
+#viewer {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1rem;
+    /* Reduced top padding */
+    margin-bottom: 0%;
+    text-align: center;
+}
+
 .user-controls {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: center;
     padding: 10px;
     background-color: #c4c4c4;
     color: #000;
     margin-bottom: 20px;
     border-radius: 10px;
-}
-
-.additional-controls {
-    align-items: center;
-    justify-content: space-between;
-    padding: 5px;
-    background-color: #c4c4c4;
-    color: #000;
-    margin-bottom: 20px;
-    border-radius: 10px;
+    gap: 10px;
+    /* Adjust the gap value as needed */
 }
 
 .insight {
+    padding: 5px;
     color: rgb(37, 34, 34);
-    font-size: large;
-}
-
-.user-controls label {
-    margin-right: 5px;
+    font-size: 25px;
 }
 
 .grid {

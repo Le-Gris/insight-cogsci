@@ -1,5 +1,5 @@
 {
-  "name": "insight-cogsci",
+  "name": "insight-viewer",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,7 +9,10 @@
     "preview": "vite preview",
     "upload_config": "sh scripts/upload_config.sh",
     "upload_replay_metadata": "node scripts/upload_replay_metadata.mjs",
-    "upload_replays": "node scripts/upload_replays.mjs"
+    "upload_replays": "node scripts/upload_replays.mjs",
+    "css-build": "node-sass --omit-source-map-url sass/mystyles.scss css/mystyles.css",
+    "css-watch": "npm run css-build -- --watch",
+    "start": "npm run css-watch"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.10.1",
@@ -25,6 +28,8 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",
+    "bulma": "^0.9.4",
+    "node-sass": "^9.0.0",
     "vite": "^5.1.4"
   }
 }
