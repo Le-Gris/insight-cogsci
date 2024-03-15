@@ -1,14 +1,44 @@
 import { createApp } from 'vue';
 import { initializeApp } from 'firebase/app';
-import App from './App.vue';
-import config from './config';
+import App from '@/App.vue';
+import Home from '@/components/views/Home.vue';
+import Replay from '@/components/views/Replay.vue';
+import Traces from '@/components/views/Traces.vue';
+import config from '@/config';
 import { VueFire, VueFireAuth } from 'vuefire';
 import VueGtag from 'vue-gtag'; // google analytics
-// import router from './router';
+import { createRouter, createWebHistory } from 'vue-router';
 import '../css/mystyles.css';
 
 // Initialize Firebase
 const firebaseApp = initializeApp(config.firebaseConfig);
+
+// Create the router
+const router = createRouter({
+  history: createWebHistory(),
+  routes: [
+    // ...routes
+    {
+      path: '/',
+      name: 'Home',
+      component: Home,
+    },
+    {
+      path: '/replays',
+      name: 'Replays',
+      component: Replay,
+    },
+    {
+      path: '/traces',
+      name: 'Traces',
+      component: Traces,
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: { name: 'Home' },
+    },
+  ],
+});
 
 // Create the app
 const app = createApp(App);
@@ -29,5 +59,7 @@ app.use(VueFire, {
     // VueFireAuth(),
   ],
 });
+
+app.use(router);
 
 app.mount('#app');

@@ -24,6 +24,7 @@
     "inquirer": "^9.2.15",
     "vue": "^3.4.19",
     "vue-gtag": "^2.0.1",
+    "vue-router": "^4.3.0",
     "vuefire": "^3.1.23"
   },
   "devDependencies": {

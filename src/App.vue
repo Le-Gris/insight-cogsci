@@ -1,10 +1,17 @@
 <script setup>
-// import HelloWorld from './components/HelloWorld.vue'
-import ReplayPage from './components/pages/ReplayPage.vue'
+import NavBar from '@/components/organisms/NavBar.vue'
+import { useRouter } from 'vue-router';
+import { ref, onMounted } from 'vue'
+
+const router = useRouter();
 </script>
 
 <template>
-  <ReplayPage />
+  <NavBar />
+  <div class="router">
+    <router-view></router-view> <!-- the router loads here -->
+  </div>
+
 </template>
 
 <style>
