@@ -87,10 +87,10 @@ const addData = async (metadata, replaydir, setname) => {
           `${replaydir}/complete/${setname}/${m.doc_id}/${m.level}/replay.mp4`
         );
         // add if statement here when running to add incomplete only such that if file exists, skip
-        if (file) {
-          console.log('File already exists: ', m.filename);
-          continue;
-        }
+        // if (file) {
+        //   console.log('File already exists: ', m.filename);
+        //   continue;
+        // }
       } catch (e1) {
         try {
           file = fs.readFileSync(
@@ -124,7 +124,6 @@ const success = (count) => {
 
 const run = async () => {
   init();
-  const env = dotenv.config({ path: 'env/.env.git.local' });
 
   // ask questions
   const { REPLAYDIR, SETNAME, METADATA } = await askQuestions();

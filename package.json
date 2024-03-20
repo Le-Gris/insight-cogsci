@@ -10,6 +10,8 @@
     "upload_config": "sh scripts/upload_config.sh",
     "upload_replay_metadata": "node scripts/upload_replay_metadata.mjs",
     "upload_replays": "node scripts/upload_replays.mjs",
+    "upload_traces_metadata": "node scripts/upload_traces_metadata.mjs",
+    "upload_traces": "node scripts/upload_traces.mjs",
     "css-build": "node-sass --omit-source-map-url sass/mystyles.scss css/mystyles.css",
     "css-watch": "npm run css-build -- --watch",
     "start": "npm run css-watch"
